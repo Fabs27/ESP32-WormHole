@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 WormHole Key Copy Simulator</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .display {
+            margin: 20px auto;
+            border: 2px solid white;
+            width: 300px;
+            height: 400px;
+            background-color: black;
+            position: relative;
+            overflow: hidden;
+        }
+        .title-container {
+            position: absolute;
+            width: 100%;
+            top: 0;
+            background-color: red;
+            color: green;
+            font-size: 14px;
+            padding: 5px;
+            overflow: hidden;
+        }
+        .title {
+            white-space: nowrap;
+            display: inline-block;
+            animation: scroll 10s linear infinite;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .menu {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 0;
+            text-align: left;
+            padding: 10px;
+        }
+        .button {
+            background-color: white;
+            color: black;
+            margin: 5px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        .button:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="display">
+        <div class="title-container">
+            <div class="title" id="title">ESP32 WormHole Key Copy</div>
+        </div>
+        <div class="menu" id="menu">
+            <!-- Menu options will be displayed here -->
+        </div>
+    </div>
+    <div>
+        <button class="button" onclick="pressButton('UP')">Up</button>
+        <button class="button" onclick="pressButton('DOWN')">Down</button>
+        <button class="button" onclick="pressButton('SELECT')">Select</button>
+        <button class="button" onclick="pressButton('BACK')">Back</button>
+    </div>
+    <script>
+        let mainMenuOption = 0;
+        let gpioMenuOption = 0;
+        let inMainMenu = true;
+        let inGPIO = false;
+
+        function displayMenu() {
+            const menuDiv = document.getElementById('menu');
+            if (inMainMenu) {
+                menuDiv.innerHTML = `
+                    <div style="color: ${mainMenuOption === 0 ? 'green' : 'white'}">1. GPIO</div>
+                    <div style="color: ${mainMenuOption === 1 ? 'green' : 'white'}">2. Devices</div>
+                    <div style="color: ${mainMenuOption === 2 ? 'green' : 'white'}">3. Reset</div>
+                `;
+            } else if (inGPIO) {
+                menuDiv.innerHTML = `
+                    <div style="color: ${gpioMenuOption === 0 ? 'green' : 'white'}">1. APPS</div>
+                    <div style="color: ${gpioMenuOption === 1 ? 'green' : 'white'}">2. Back</div>
+                `;
+            }
+        }
+
+        function showDevices() {
+            const menuDiv = document.getElementById('menu');
+            menuDiv.innerHTML = `
+                <div>Devices:</div>
+                <div>WormHole</div>
+                <div>GitHub: <a href="https://github.com/Fabs27?tab=repositories" target="_blank" style="color: white;">https://github.com/Fabs27?tab=repositories</a></div>
+                <div>Version: 1.0</div>
+                <div>Press Back to return</div>
+            `;
+        }
+
+        function pressButton(button) {
+            if (inMainMenu) {
+                if (button === 'SELECT') {
+                    if (mainMenuOption === 0) {
+                        inMainMenu = false;
+                        inGPIO = true;
+                        displayMenu();
+                    } else if (mainMenuOption === 1) {
+                        inMainMenu = false;
+                        showDevices();
+                    } else if (mainMenuOption === 2) {
+                        alert('System Resetting...');
+                    }
+                } else if (button === 'UP') {
+                    mainMenuOption = (mainMenuOption - 1 + 3) % 3;
+                    displayMenu();
+                } else if (button === 'DOWN') {
+                    mainMenuOption = (mainMenuOption + 1) % 3;
+                    displayMenu();
+                }
+            } else if (inGPIO) {
+                if (button === 'SELECT') {
+                    if (gpioMenuOption === 0) {
+                        alert('Launching Key Copy App...');
+                    } else if (gpioMenuOption === 1) {
+                        inGPIO = false;
+                        inMainMenu = true;
+                        displayMenu();
+                    }
+                } else if (button === 'UP') {
+                    gpioMenuOption = (gpioMenuOption - 1 + 2) % 2;
+                    displayMenu();
+                } else if (button === 'DOWN') {
+                    gpioMenuOption = (gpioMenuOption + 1) % 2;
+                    displayMenu();
+                }
+            }
+
+            if (button === 'BACK') {
+                if (!inMainMenu) {
+                    inMainMenu = true;
+                    inGPIO = false;
+                    displayMenu();
+                }
+            }
+        }
+
+        // Update the title with flip effect
+        function updateTitle() {
+            const titleDiv = document.getElementById('title');
+            titleDiv.style.transform = `translateX(${Date.now() % 300}px)`;
+        }
+
+        setInterval(updateTitle, 100);
+        displayMenu();
+    </script>
+</body>
+</html>
