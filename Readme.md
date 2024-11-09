@@ -44,14 +44,25 @@ Diretório	Conteúdo
 ProjetoESP32/	Raiz do projeto
 
 ├── ProjetoESP32.ino	Arquivo principal
+
 ├── GPIO/	Diretório para arquivos GPIO
+
 │ ├── tft_display.c	Implementação do display
+
 │ ├── tft_display.h	Cabeçalho do display
+
 ├── APPS/	Diretório para aplicativos
+
 │ ├── KeyCopy/	Diretório do aplicativo KeyCopy
+
 │ │ ├── key_copy_app.c	Implementação do aplicativo
+
 │ │ ├── key_copy_app.h	Cabeçalho do aplicativo
+
 ├── SD Card/	Diretório para arquivos do SD
+
 │ ├── apps/	Diretório de aplicativos no SD
+
 │ │ ├── KeyCopy/	Diretório do KeyCopy no SD
+
 │ │ │ ├── key_copy_config.txt	Configuração do KeyCopy no SD
